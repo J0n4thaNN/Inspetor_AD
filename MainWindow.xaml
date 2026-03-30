@@ -1,0 +1,235 @@
+﻿<Window x:Class="MonitorUsuariosAD.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Inspetor AD"
+        Height="650"
+        Width="850"
+        WindowStartupLocation="CenterScreen"
+        Background="#FF0F0F12">
+
+    <Window.Resources>
+        <!-- Paleta de Cores Refinada -->
+        <SolidColorBrush x:Key="PrimaryAccent" Color="#FF00BFFF" />
+        <!-- DeepSkyBlue -->
+        <SolidColorBrush x:Key="PrimaryAction" Color="#FF4A90E2" />
+        <!-- Azul Corporativo -->
+        <SolidColorBrush x:Key="SuccessBrush" Color="#FF28A745" />
+        <!-- Verde Sucesso -->
+        <SolidColorBrush x:Key="WarningBrush" Color="#FFFFC107" />
+        <!-- Amarelo Alerta -->
+        <SolidColorBrush x:Key="DangerBrush" Color="#FFDC3545" />
+        <!-- Vermelho Perigo -->
+        <SolidColorBrush x:Key="CardBackground" Color="#FF1C1C1E" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#FFADB5BD" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#FF343A40" />
+
+        <!-- Estilo Geral TextBox -->
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Background" Value="#FF2A2A30" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="CaretBrush" Value="{StaticResource PrimaryAccent}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryAccent}" />
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="{Binding Source={StaticResource PrimaryAccent}, Path=Color}" ShadowDepth="0" BlurRadius="8" Opacity="0.6"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo Botão Principal -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{StaticResource PrimaryAction}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="BtnBorder" Background="{TemplateBinding Background}" CornerRadius="5" Padding="15,10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Opacity" Value="0.9" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Opacity" Value="0.7" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#FF3A3A4A" />
+                                <Setter Property="Foreground" Value="#FF808080" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo DataGrid Aprimorado -->
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="GridLinesVisibility" Value="None" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="RowHeaderWidth" Value="0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FF2A2A30" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryAccent}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridRow">
+                        <Border x:Name="RowBorder" Background="#FF23232C" CornerRadius="4" Margin="0,2" Padding="2">
+                            <DataGridCellsPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Status: Ninguém Logado -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Status}" Value="OK" />
+                                    <Condition Binding="{Binding Usuario}" Value="Ninguém logado" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="RowBorder" Property="Background" Value="{StaticResource WarningBrush}" />
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </MultiDataTrigger>
+                            <!-- Status: ONLINE -->
+                            <DataTrigger Binding="{Binding Status}" Value="ONLINE">
+                                <Setter TargetName="RowBorder" Property="Background" Value="{StaticResource SuccessBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </DataTrigger>
+                            <!-- Status: OFFLINE -->
+                            <DataTrigger Binding="{Binding Status}" Value="OFFLINE">
+                                <Setter TargetName="RowBorder" Property="Background" Value="{StaticResource DangerBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </DataTrigger>
+                            <!-- Status: Erros -->
+                            <DataTrigger Binding="{Binding Status}" Value="Acesso Negado">
+                                <Setter TargetName="RowBorder" Property="Background" Value="{StaticResource DangerBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Erro RPC/WMI">
+                                <Setter TargetName="RowBorder" Property="Background" Value="{StaticResource WarningBrush}" />
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Erro de Conexão">
+                                <Setter TargetName="RowBorder" Property="Background" Value="{StaticResource DangerBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Cabeçalho -->
+        <TextBlock Grid.Row="0" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryAccent}" Margin="0,0,0,20">
+            <Run Text="🎯"/> Inspetor AD
+        </TextBlock>
+
+        <!-- Painel de Controle -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Painel de Entrada Manual -->
+            <Border Grid.Column="0" Background="{StaticResource CardBackground}" CornerRadius="8" Padding="20" Margin="0,0,15,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Insira os IPs ou Hostnames (um por linha)" Foreground="{StaticResource TextSecondary}" FontSize="12" Margin="0,0,0,8" FontWeight="Bold" />
+                    <TextBox x:Name="TxtAlvos" Grid.Row="1" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="120"/>
+                </Grid>
+            </Border>
+
+            <!-- Painel de Ações -->
+            <Border Grid.Column="1" Background="{StaticResource CardBackground}" CornerRadius="8" Padding="20">
+                <StackPanel VerticalAlignment="Center">
+                    <Button x:Name="BtnConsultar" Content="CONSULTAR MANUAL" Style="{StaticResource ActionButtonStyle}" Click="BtnConsultar_OnClick"/>
+                    <Button x:Name="BtnConsultarADOnline" Content="AD (ONLINE)" Style="{StaticResource ActionButtonStyle}" Background="#FF007BFF" Click="BtnConsultarADOnline_OnClick"/>
+                    <Button x:Name="BtnConsultarAD" Content="AD (TODOS)" Style="{StaticResource ActionButtonStyle}" Background="#FF5865F2" Click="BtnConsultarAD_OnClick"/>
+                    <Button x:Name="BtnCancelar" Content="CANCELAR" Style="{StaticResource ActionButtonStyle}" Background="{StaticResource DangerBrush}" IsEnabled="False" Click="BtnCancelar_OnClick" Margin="0,20,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Área de Resultados -->
+        <Border Grid.Row="2" Background="{StaticResource CardBackground}" CornerRadius="8" Padding="10">
+            <DataGrid x:Name="GridResultados" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="📍 ALVO" Binding="{Binding Alvo}" Width="*" />
+                    <DataGridTextColumn Header="👤 USUÁRIO" Binding="{Binding Usuario}" Width="1.5*" />
+                    <DataGridTextColumn Header="⚡ STATUS" Binding="{Binding Status}" Width="1.2*" />
+                    <DataGridTextColumn Header="🕒 LAST LOGON" Binding="{Binding LastLogon, StringFormat='dd/MM/yy HH:mm'}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Barra de Status e Progresso -->
+        <Grid Grid.Row="3" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StatusBar Grid.Column="0" Background="Transparent">
+                <StatusBarItem>
+                    <TextBlock x:Name="TxtStatusBar" Text="Pronto" Foreground="{StaticResource TextSecondary}" />
+                </StatusBarItem>
+            </StatusBar>
+
+            <ProgressBar Grid.Column="1" x:Name="BarraProgresso" Width="250" Height="8" IsIndeterminate="True" Visibility="Collapsed" />
+        </Grid>
+    </Grid>
+</Window>

@@ -41,7 +41,10 @@
                                 BorderBrush="{TemplateBinding BorderBrush}" 
                                 BorderThickness="{TemplateBinding BorderThickness}" 
                                 CornerRadius="5">
-                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                            <!-- CORREÇÃO 1: Adicionado TemplateBinding para as barras de rolagem funcionarem -->
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" 
+                                          HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}" 
+                                          VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
@@ -189,7 +192,8 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="Insira os IPs ou Hostnames (um por linha)" Foreground="{StaticResource TextSecondary}" FontSize="12" Margin="0,0,0,8" FontWeight="Bold" />
-                    <TextBox x:Name="TxtAlvos" Grid.Row="1" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="120"/>
+                    <!-- CORREÇÃO 2: Adicionado o MaxHeight="220" para impedir o TextBox de crescer infinitamente -->
+                    <TextBox x:Name="TxtAlvos" Grid.Row="1" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="120" MaxHeight="220"/>
                 </Grid>
             </Border>
 

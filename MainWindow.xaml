@@ -172,10 +172,21 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Cabeçalho -->
-        <TextBlock Grid.Row="0" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryAccent}" Margin="0,0,0,20">
-            <Run Text="🎯"/> Inspetor AD
-        </TextBlock>
+        <!-- Cabeçalho com o TxtStatusBar no canto superior direito -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryAccent}">
+                <Run Text="🎯"/> Inspetor AD
+            </TextBlock>
+
+            <TextBlock x:Name="TxtStatusBar" Grid.Column="1" Text="Pronto" 
+                       VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" 
+                       Foreground="{StaticResource TextSecondary}" />
+        </Grid>
 
         <!-- Painel de Controle -->
         <Grid Grid.Row="1" Margin="0,0,0,15">
@@ -220,19 +231,22 @@
             </DataGrid>
         </Border>
 
-        <!-- Barra de Status e Progresso -->
+        <!-- Barra de Progresso e Créditos (Rodapé) -->
         <Grid Grid.Row="3" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <StatusBar Grid.Column="0" Background="Transparent">
-                <StatusBarItem>
-                    <TextBlock x:Name="TxtStatusBar" Text="Pronto" Foreground="{StaticResource TextSecondary}" />
-                </StatusBarItem>
-            </StatusBar>
+            <!-- Créditos no canto inferior esquerdo -->
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}" FontSize="12">
+                Desenvolvido por 
+                <Hyperlink NavigateUri="https://github.com/J0n4thaNN" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{StaticResource PrimaryAction}" TextDecorations="Underline">
+                    github.com/J0n4thaNN
+                </Hyperlink>
+            </TextBlock>
 
+            <!-- Barra de progresso à direita -->
             <ProgressBar Grid.Column="1" x:Name="BarraProgresso" Width="250" Height="8" IsIndeterminate="True" Visibility="Collapsed" />
         </Grid>
     </Grid>

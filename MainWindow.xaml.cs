@@ -367,5 +367,16 @@ namespace MonitorUsuariosAD
                 AlternarEstadoBotoes(false);
             }
         }
+
+        // Evento que aciona a abertura do link no navegador
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = e.Uri.AbsoluteUri,
+                UseShellExecute = true // Necessário para abrir URLs no .NET Core / .NET 5+
+            });
+            e.Handled = true;
+        }
     }
 }
